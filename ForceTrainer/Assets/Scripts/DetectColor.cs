@@ -24,6 +24,7 @@ public class DetectColor : MonoBehaviour
     [SerializeField] [Range(0, 100)] float ObjectsDetectionRange = 20;
     public List<Vector2> middlePoints;
     public AllGroups ListOfAllGroups = new AllGroups();
+    [SerializeField] bool CalibrationMode = false;
 
     [Header("Mapa")]
     public int[,] mapa;
@@ -40,8 +41,8 @@ public class DetectColor : MonoBehaviour
     public Slider sliderRange;
 
     [Header("Trackers")]
-    [SerializeField] Image Tracker1;
-    [SerializeField] Image Tracker2;
+    public Image Tracker1;
+    public Image Tracker2;
 
     [System.Serializable]
     public class SingleGroup
@@ -66,7 +67,6 @@ public class DetectColor : MonoBehaviour
         height = webCamTexture.height;
 
         GetComponent<RawImage>().texture = webCamTexture;
-        //GetComponent<RawImage>().defaultMaterial.mainTexture = webCamTexture;
 
         mapa = new int[mapaX, mapaY];
     }
@@ -122,9 +122,15 @@ public class DetectColor : MonoBehaviour
                 }
             }
 
-        newTex.Apply();
-        GetComponent<RawImage>().texture = newTex;
-        //GetComponent<Image>().material.SetTexture("",newTex);
+        if (CalibrationMode)
+        {
+            newTex.Apply();
+            GetComponent<RawImage>().texture = newTex;
+        }
+        else
+        {
+            GetComponent<RawImage>().texture = webCamTexture;
+        }
 
 
         #region(Grupowanie pixeli)
@@ -265,19 +271,11 @@ public class DetectColor : MonoBehaviour
             }
             else
             {
-                Debug.Log(middlePoints[0].y +" /2  * "+height/1080f);
-                Tracker1.rectTransform.localPosition = new Vector2(middlePoints[0].x, ((middlePoints[0].y/2) * (1080f / height) ) );
+                //Debug.Log(middlePoints[0].y +" /2  * "+1080f/ height);
+                Tracker1.rectTransform.localPosition = new Vector2(middlePoints[0].x, ((middlePoints[0].y - height/2) * (1080f / height) ) );
             }
-
-            if (middlePoints[0].x < width / 2)
-            {
-                Tracker1.rectTransform.localPosition = new Vector2((1920f / -2) + middlePoints[0].x * (1920f / width), Tracker1.rectTransform.localPosition.y);
-            }
-            else
-            {
-               // Debug.Log(middlePoints[0].y + " /2  * " + height / 1080f);
-                Tracker1.rectTransform.localPosition = new Vector2( middlePoints[0].x/2 * (1920f / width), Tracker1.rectTransform.localPosition.y);
-            }
+            Tracker1.rectTransform.localPosition = new Vector2((1920f / -2) + (middlePoints[0].x * (1920f / width)), Tracker1.rectTransform.localPosition.y);
+            
 
 
         }
@@ -287,7 +285,31 @@ public class DetectColor : MonoBehaviour
     }
 
  
+    public void SwitchMode()
+    {
+        if (CalibrationMode)
+        {
+            CalibrationMode = false;
+        }
+        else
+        {
+            CalibrationMode = true;
+        }
+    }
 
+    public bool TrackerOnMarker(Vector2 vec)
+    {
+        if (middlePoints.Count > 0)
+        {
+            Vector2 pom = new Vector2(Tracker1.rectTransform.localPosition.x, Tracker1.rectTransform.localPosition.y);
+            if (Vector2.Distance(pom, vec) < 200)
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
     public void SwitchWebcamera()
     {
