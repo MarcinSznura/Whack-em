@@ -32,6 +32,7 @@ public class DetectColor : MonoBehaviour
     int nextgroup = 2;
 
     [Header("Sliders Value")]
+    [SerializeField] GameObject sliders;
     public Slider sliderHvalueMin;
     public Slider sliderHvalueMax;
     public Slider sliderSvalueMin;
@@ -78,8 +79,8 @@ public class DetectColor : MonoBehaviour
         SvalueMin = sliderSvalueMin.value;
         SvalueMax = sliderSvalueMax.value;
         VvalueMin = sliderVvalueMin.value;
-        VvalueMax = sliderVvalueMin.value;
-        ObjectsDetectionRange = sliderRange.value;
+        VvalueMax = sliderVvalueMax.value;
+        //ObjectsDetectionRange = sliderRange.value;
     }
 
     
@@ -290,10 +291,14 @@ public class DetectColor : MonoBehaviour
         if (CalibrationMode)
         {
             CalibrationMode = false;
+            sliders.SetActive(false);
+            FindObjectOfType<MarkerPlacer>().ShowMarkes();
         }
         else
         {
             CalibrationMode = true;
+            sliders.SetActive(true);
+            FindObjectOfType<MarkerPlacer>().HideMarkes();
         }
     }
 

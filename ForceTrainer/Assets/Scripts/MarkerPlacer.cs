@@ -54,6 +54,16 @@ public class MarkerPlacer : MonoBehaviour
 
     }
 
+    public void HideMarkes()
+    {
+        Marker1.enabled = false;
+        Marker2.enabled = false;
+    }
 
+    public void ShowMarkes()
+    {
+        Marker1.enabled = true;
+        Marker2.enabled = true;
+    }
 
 }
