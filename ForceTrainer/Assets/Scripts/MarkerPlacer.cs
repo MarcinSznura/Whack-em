@@ -15,7 +15,7 @@ public class MarkerPlacer : MonoBehaviour
 
     private void Start()
     {
-        PutMarkersInRandomTiles();
+        //PutMarkersInRandomTiles();
     }
 
     private void Update()
@@ -29,7 +29,7 @@ public class MarkerPlacer : MonoBehaviour
 
     }
 
-    private void PutMarkersInRandomTiles()
+    public  void PutMarkersInRandomTiles()
     {
         if (doubleMarker)
         {
@@ -64,6 +64,13 @@ public class MarkerPlacer : MonoBehaviour
     {
         Marker1.enabled = true;
         Marker2.enabled = true;
+    }
+
+    public void PutMarkersOutsideScreen()
+    {
+        Marker1.rectTransform.localPosition = new Vector2(2000, 0);
+        Marker2.rectTransform.localPosition = new Vector2(2000, 0);
+
     }
 
 }

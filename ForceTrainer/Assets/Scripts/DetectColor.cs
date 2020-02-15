@@ -11,6 +11,7 @@ public class DetectColor : MonoBehaviour
     public WebCamTexture webCamTexture;
     WebCamDevice[] devices;
     [SerializeField] int width, height;
+    bool CalibrationMode = false;
 
     [Header("RGB Colors")]
     [SerializeField] [Range(0, 1)] float HvalueMin = 0.1f;
@@ -24,7 +25,6 @@ public class DetectColor : MonoBehaviour
     [SerializeField] [Range(0, 100)] float ObjectsDetectionRange = 20;
     public List<Vector2> middlePoints;
     public AllGroups ListOfAllGroups = new AllGroups();
-    [SerializeField] bool CalibrationMode = false;
 
     [Header("Mapa")]
     public int[,] mapa;
@@ -32,7 +32,6 @@ public class DetectColor : MonoBehaviour
     int nextgroup = 2;
 
     [Header("Sliders Value")]
-    [SerializeField] GameObject sliders;
     public Slider sliderHvalueMin;
     public Slider sliderHvalueMax;
     public Slider sliderSvalueMin;
@@ -107,7 +106,7 @@ public class DetectColor : MonoBehaviour
                     float H, S, V;
                     Color.RGBToHSV(rgb, out H, out S, out V);
 
-                    if (H > HvalueMin && H < HvalueMax && S > SvalueMin && S < SvalueMax && V > VvalueMin && V < VvalueMax)
+                    if (H >= HvalueMin && H <= HvalueMax && S >= SvalueMin && S <= SvalueMax && V >= VvalueMin && V <= VvalueMax)
                     {
                         mapa[x, y] = 1;
                         //Color rgb = Color.black;
@@ -286,21 +285,7 @@ public class DetectColor : MonoBehaviour
     }
 
  
-    public void SwitchMode()
-    {
-        if (CalibrationMode)
-        {
-            CalibrationMode = false;
-            sliders.SetActive(false);
-            FindObjectOfType<MarkerPlacer>().ShowMarkes();
-        }
-        else
-        {
-            CalibrationMode = true;
-            sliders.SetActive(true);
-            FindObjectOfType<MarkerPlacer>().HideMarkes();
-        }
-    }
+  
 
     public bool TrackerOnMarker(Vector2 vec)
     {
@@ -323,6 +308,9 @@ public class DetectColor : MonoBehaviour
         webCamTexture.Play();
     }
 
-
+    public void IsCalibrationModeOn(bool modeOn)
+    {
+        CalibrationMode = modeOn;
+    }
 
 }
