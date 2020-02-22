@@ -11,12 +11,14 @@ public class MarkerPlacer : MonoBehaviour
 
     [SerializeField] GameObject animated;
     [SerializeField] Canvas GUICanvas;
+    [SerializeField] AudioSource soundPlayer;
+    [SerializeField] AudioClip sound;
 
     [SerializeField] Vector2 pos1;
 
     private void Start()
     {
-        //PutMarkersInRandomTiles();
+        soundPlayer = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -25,6 +27,7 @@ public class MarkerPlacer : MonoBehaviour
         if (FindObjectOfType<DetectColor>().TrackerOnMarker(m))
         {
             FindObjectOfType<GameMaster>().IncreaseScore(1);
+            soundPlayer.PlayOneShot(sound);
             Instantiate(animated,new Vector3(Marker1.transform.position.x, Marker1.transform.position.y, Marker1.transform.position.z),Quaternion.identity, GUICanvas.transform);
             PutMarkersInRandomTiles();
         }

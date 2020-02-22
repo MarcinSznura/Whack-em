@@ -12,9 +12,9 @@ public class GameMaster : MonoBehaviour
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] TextMeshProUGUI timeText;
     [SerializeField] GameObject startGameButton;
+    [SerializeField] GameObject stopGameButton;
     [SerializeField] GameObject calibrationModeButton;
     [SerializeField] GameObject switchWebcameraButton;
-    [SerializeField] TextMeshProUGUI startStopButtonText;
  
     [SerializeField] float captureRate = 1;
     [SerializeField] bool calibrationMode = false;
@@ -78,24 +78,49 @@ public class GameMaster : MonoBehaviour
         yield return new WaitForSeconds(captureRate);
         captureWebCamera = true;
     }
-
-    public void StartStopRoundButton()
+    
+    public void StartRound30()
     {
-        if (state == State.game)
-        {
-            startStopButtonText.text = "Start";
-            StopRound();
-        }
-        else
-        {
-            startStopButtonText.text = "Stop";
-            FindObjectOfType<MarkerPlacer>().PutMarkersInRandomTiles();
-            roundTime = 30;
-            score = 0;
-            calibrationModeButton.SetActive(false);
-            state = State.game;
-            scoreText.text = "Score: " + score.ToString();
-        }
+        FindObjectOfType<MarkerPlacer>().PutMarkersInRandomTiles();
+        roundTime = 30;
+        score = 0;
+        calibrationModeButton.SetActive(false);
+        state = State.game;
+        scoreText.text = "Score: " + score.ToString();
+        HideShowRightButtons();
+    }
+
+    public void StartRound1()
+    {
+        FindObjectOfType<MarkerPlacer>().PutMarkersInRandomTiles();
+        roundTime = 60;
+        score = 0;
+        calibrationModeButton.SetActive(false);
+        state = State.game;
+        scoreText.text = "Score: " + score.ToString();
+        HideShowRightButtons();
+    }
+
+    public void StartRound2()
+    {
+        FindObjectOfType<MarkerPlacer>().PutMarkersInRandomTiles();
+        roundTime = 120;
+        score = 0;
+        calibrationModeButton.SetActive(false);
+        state = State.game;
+        scoreText.text = "Score: " + score.ToString();
+        HideShowRightButtons();
+    }
+
+    public void StartRound5()
+    {
+        FindObjectOfType<MarkerPlacer>().PutMarkersInRandomTiles();
+        roundTime = 360;
+        score = 0;
+        calibrationModeButton.SetActive(false);
+        state = State.game;
+        scoreText.text = "Score: " + score.ToString();
+        HideShowRightButtons();
     }
 
     public void StopRound()
@@ -105,8 +130,23 @@ public class GameMaster : MonoBehaviour
         calibrationModeButton.SetActive(true);
         roundTime = 0;
         timeText.text = "Time: " + Math.Round(roundTime, 2).ToString();
-        startStopButtonText.text = "Start";
+        HideShowRightButtons();
     }
+
+    private void HideShowRightButtons()
+    {
+        if (state == State.game)
+        {
+            startGameButton.SetActive(false);
+            stopGameButton.SetActive(true);
+        }
+        else
+        {
+            startGameButton.SetActive(true);
+            stopGameButton.SetActive(false);
+        }
+    }
+
 
     public void SwitchMode()
     {
