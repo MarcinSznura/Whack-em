@@ -282,7 +282,6 @@ public class DetectColor : MonoBehaviour
             }
             else
             {
-                //Debug.Log(middlePoints[0].y +" /2  * "+1080f/ height);
                 Tracker1.rectTransform.localPosition = new Vector2(trackerMiddlePoint.x, ((trackerMiddlePoint.y - height / 2) * (1080f / height)));
             }
             Tracker1.rectTransform.localPosition = new Vector2((1920f / -2) + (trackerMiddlePoint.x * (1920f / width)), Tracker1.rectTransform.localPosition.y);

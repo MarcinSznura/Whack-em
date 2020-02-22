@@ -9,6 +9,9 @@ public class MarkerPlacer : MonoBehaviour
     [SerializeField] Vector2 [] MarkersPositions;
     [SerializeField] Image Marker1;
 
+    [SerializeField] GameObject animated;
+    [SerializeField] Canvas GUICanvas;
+
     [SerializeField] Vector2 pos1;
 
     private void Start()
@@ -22,6 +25,7 @@ public class MarkerPlacer : MonoBehaviour
         if (FindObjectOfType<DetectColor>().TrackerOnMarker(m))
         {
             FindObjectOfType<GameMaster>().IncreaseScore(1);
+            Instantiate(animated,new Vector3(Marker1.transform.position.x, Marker1.transform.position.y, Marker1.transform.position.z),Quaternion.identity, GUICanvas.transform);
             PutMarkersInRandomTiles();
         }
 
