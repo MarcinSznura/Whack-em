@@ -2,11 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DetectColor : MonoBehaviour
+public class backup : MonoBehaviour
 {
     [Header("WebCameras Info")]
     public WebCamTexture webCamTexture;
@@ -15,19 +14,15 @@ public class DetectColor : MonoBehaviour
     bool CalibrationMode = false;
 
     [Header("RGB Colors")]
-    [SerializeField] [Range(0, 1)] double HvalueMin = 0.1f;
-    [SerializeField] [Range(0, 1)] double HvalueMax = 0.9f;
-    [SerializeField] [Range(0, 1)] double SvalueMin = 0.1f;
-    [SerializeField] [Range(0, 1)] double SvalueMax = 0.9f;
-    [SerializeField] [Range(0, 1)] double VvalueMin = 0.1f;
-    [SerializeField] [Range(0, 1)] double VvalueMax = 0.9f;
-    [SerializeField] TextMeshProUGUI redRange;
-    [SerializeField] TextMeshProUGUI blueRange;
-    [SerializeField] TextMeshProUGUI greenRange;
+    [SerializeField] [Range(0, 1)] float HvalueMin = 0.1f;
+    [SerializeField] [Range(0, 1)] float HvalueMax = 0.9f;
+    [SerializeField] [Range(0, 1)] float SvalueMin = 0.1f;
+    [SerializeField] [Range(0, 1)] float SvalueMax = 0.9f;
+    [SerializeField] [Range(0, 1)] float VvalueMin = 0.1f;
+    [SerializeField] [Range(0, 1)] float VvalueMax = 0.9f;
 
     [Header("Picture Details")]
     [SerializeField] [Range(0, 100)] float ObjectsDetectionRange = 20;
-    [SerializeField] TextMeshProUGUI rangeValue;
     public List<Vector2> middlePoints;
     public AllGroups ListOfAllGroups = new AllGroups();
     public Vector2 trackerMiddlePoint;
@@ -74,23 +69,17 @@ public class DetectColor : MonoBehaviour
         GetComponent<RawImage>().texture = webCamTexture;
 
         mapa = new int[mapaX, mapaY];
-
-        SubmitSliderSetting();
     }
 
     public void SubmitSliderSetting()
     {
-        HvalueMax = Math.Round(sliderHvalueMax.value,2);
-        HvalueMin = Math.Round(sliderHvalueMin.value, 2);
-        SvalueMin = Math.Round(sliderSvalueMin.value, 2);
-        SvalueMax = Math.Round(sliderSvalueMax.value, 2);
-        VvalueMin = Math.Round(sliderVvalueMin.value, 2);
-        VvalueMax = Math.Round(sliderVvalueMax.value, 2);
-        ObjectsDetectionRange = sliderRange.value;
-        redRange.text = (HvalueMin * 100).ToString() + "% - " + (HvalueMax*100).ToString() + "%";
-        greenRange.text = (SvalueMin*100).ToString() + "% - " + (SvalueMax*100).ToString() + "%";
-        blueRange.text = (VvalueMin*100).ToString() + "% - " + (VvalueMax*100).ToString()+"%";
-        rangeValue.text = "Objects size: "+ObjectsDetectionRange.ToString();
+        HvalueMax = sliderHvalueMax.value;
+        HvalueMin = sliderHvalueMin.value;
+        SvalueMin = sliderSvalueMin.value;
+        SvalueMax = sliderSvalueMax.value;
+        VvalueMin = sliderVvalueMin.value;
+        VvalueMax = sliderVvalueMax.value;
+        //ObjectsDetectionRange = sliderRange.value;
     }
 
     
@@ -115,11 +104,7 @@ public class DetectColor : MonoBehaviour
 
                     var rgb = image.GetPixel(x, y);
                     float H, S, V;
-                //Color.RGBToHSV(rgb, out H, out S, out V);
-                H = rgb.r;
-                S = rgb.g;
-                V = rgb.b;
-
+                    Color.RGBToHSV(rgb, out H, out S, out V);
 
                     if (H >= HvalueMin && H <= HvalueMax && S >= SvalueMin && S <= SvalueMax && V >= VvalueMin && V <= VvalueMax)
                     {

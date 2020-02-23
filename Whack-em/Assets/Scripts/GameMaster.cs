@@ -19,6 +19,8 @@ public class GameMaster : MonoBehaviour
     [SerializeField] float captureRate = 1;
     [SerializeField] bool calibrationMode = false;
     [SerializeField] GameObject sliders;
+    [SerializeField] Slider fpsValue;
+    [SerializeField] TextMeshProUGUI fpsText;
 
     bool captureWebCamera = true;
     DetectColor colorReader;
@@ -67,6 +69,12 @@ public class GameMaster : MonoBehaviour
     {
         score += inc;
         scoreText.text = "Score: " + score.ToString();
+    }
+
+    public void SetFPS()
+    {
+        captureRate = 1 / fpsValue.value;
+        fpsText.text = "FPS: "+ fpsValue.value.ToString();
     }
 
     IEnumerator ReadColors()
