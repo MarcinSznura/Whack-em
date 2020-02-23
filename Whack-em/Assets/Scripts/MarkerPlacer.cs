@@ -15,6 +15,8 @@ public class MarkerPlacer : MonoBehaviour
     [SerializeField] AudioClip sound;
 
     [SerializeField] Vector2 pos1;
+    private int newPlace, oldPlace;
+
 
     private void Start()
     {
@@ -26,18 +28,28 @@ public class MarkerPlacer : MonoBehaviour
         Vector2 m = new Vector2(Marker1.rectTransform.localPosition.x, Marker1.rectTransform.localPosition.y);
         if (FindObjectOfType<DetectColor>().TrackerOnMarker(m))
         {
-            FindObjectOfType<GameMaster>().IncreaseScore(1);
-            soundPlayer.PlayOneShot(sound);
-            Instantiate(animated,new Vector3(Marker1.transform.position.x, Marker1.transform.position.y, Marker1.transform.position.z),Quaternion.identity, GUICanvas.transform);
-            PutMarkersInRandomTiles();
+            Whacked();
         }
 
     }
 
+    public void Whacked()
+    {
+        oldPlace = newPlace;
+        FindObjectOfType<GameMaster>().IncreaseScore(1);
+        soundPlayer.PlayOneShot(sound);
+        Instantiate(animated, new Vector3(Marker1.transform.position.x, Marker1.transform.position.y, Marker1.transform.position.z), Quaternion.identity, GUICanvas.transform);
+        PutMarkersInRandomTiles();
+    }
+
     public  void PutMarkersInRandomTiles()
     {
-       
-            pos1 = MarkersPositions[Random.Range(0, 8)];
+        while(oldPlace == newPlace)
+        {
+            newPlace = Random.Range(0, 8);
+        }
+        
+            pos1 = MarkersPositions[newPlace];
             Marker1.rectTransform.localPosition = new Vector2(pos1.x, pos1.y);
            
 
