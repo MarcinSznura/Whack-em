@@ -15,6 +15,7 @@ public class GameMaster : MonoBehaviour
     [SerializeField] GameObject stopGameButton;
     [SerializeField] GameObject calibrationModeButton;
     [SerializeField] GameObject switchWebcameraButton;
+    [SerializeField] GameObject soundButton;
  
     [SerializeField] float captureRate = 1;
     [SerializeField] bool calibrationMode = false;
@@ -25,6 +26,10 @@ public class GameMaster : MonoBehaviour
     bool captureWebCamera = true;
     DetectColor colorReader;
     float roundTime = 0;
+    bool soundOn = true;
+
+    [SerializeField] Sprite soundOnImage;
+    [SerializeField] Sprite soundOffImage;
 
     enum State {idlle, calibration, game };
 
@@ -132,6 +137,27 @@ public class GameMaster : MonoBehaviour
         HideShowRightButtons();
     }
 
+    public void CloseGame()
+    {
+        Application.Quit();
+    }
+
+    public void TurnSoundOnOff()
+    {
+        if (soundOn)
+        {
+            soundOn = false;
+            FindObjectOfType<MarkerPlacer>().GetComponent<AudioSource>().volume = 0;
+            soundButton.GetComponent<Image>().sprite = soundOffImage;
+        }
+        else
+        {
+            soundOn = true;
+            FindObjectOfType<MarkerPlacer>().GetComponent<AudioSource>().volume = 1;
+            soundButton.GetComponent<Image>().sprite = soundOnImage;
+        }
+    }
+
     public void StopRound()
     {
         state = State.idlle;
@@ -169,6 +195,7 @@ public class GameMaster : MonoBehaviour
             sliders.SetActive(false);
             startGameButton.SetActive(true);
             switchWebcameraButton.SetActive(false);
+            soundButton.SetActive(false);
             FindObjectOfType<MarkerPlacer>().ShowMarker();
         }
         else
@@ -180,6 +207,7 @@ public class GameMaster : MonoBehaviour
             sliders.SetActive(true);
             startGameButton.SetActive(false);
             switchWebcameraButton.SetActive(true);
+            soundButton.SetActive(true);
             FindObjectOfType<MarkerPlacer>().HideMarker();
         }
     }
