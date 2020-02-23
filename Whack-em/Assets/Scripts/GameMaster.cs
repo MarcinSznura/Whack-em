@@ -34,6 +34,7 @@ public class GameMaster : MonoBehaviour
         scoreText.text = "Score: " + score.ToString();
         timeText.text = "Time: " + Math.Round(roundTime, 2).ToString();
         state = State.idlle;
+        fpsText.text = "FPS: " + fpsValue.value.ToString();
     }
 
     void Update()
