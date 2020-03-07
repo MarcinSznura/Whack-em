@@ -49,6 +49,10 @@ public class DetectColor : MonoBehaviour
     [Header("Trackers")]
     public Image Tracker1;
 
+    [SerializeField] TextMeshProUGUI trackerPosition;
+    Texture2D image;
+    Texture2D newTex;
+
     [System.Serializable]
     public class SingleGroup
     {
@@ -76,6 +80,8 @@ public class DetectColor : MonoBehaviour
         mapa = new int[mapaX, mapaY];
 
         SubmitSliderSetting();
+
+        
     }
 
     public void SubmitSliderSetting()
@@ -102,11 +108,11 @@ public class DetectColor : MonoBehaviour
         middlePoints.Clear();
         nextgroup = 2;
 
-        Texture2D image = new Texture2D(webCamTexture.width, webCamTexture.height);
+        image = new Texture2D(webCamTexture.width, webCamTexture.height);
         image.SetPixels(webCamTexture.GetPixels());
         image.Apply();
 
-            Texture2D newTex = new Texture2D(image.width, image.height);
+            newTex = new Texture2D(image.width, image.height);
 
             for (int x = 0; x < newTex.width; x++)
             {
@@ -293,24 +299,32 @@ public class DetectColor : MonoBehaviour
 
             if (trackerMiddlePoint.y < height / 2)
             {
-                Tracker1.rectTransform.localPosition = new Vector2(trackerMiddlePoint.x, ((1080f / -2) + trackerMiddlePoint.y * (1080f / height)));
+                Tracker1.rectTransform.localPosition = new Vector2(trackerMiddlePoint.x, ((webCamTexture.height / -2) + trackerMiddlePoint.y * (webCamTexture.height / height)));
             }
             else
             {
-                Tracker1.rectTransform.localPosition = new Vector2(trackerMiddlePoint.x, ((trackerMiddlePoint.y - height / 2) * (1080f / height)));
+                Tracker1.rectTransform.localPosition = new Vector2(trackerMiddlePoint.x, ((trackerMiddlePoint.y - height / 2) * (webCamTexture.height / height)));
             }
-            Tracker1.rectTransform.localPosition = new Vector2((1920f / -2) + (trackerMiddlePoint.x * (1920f / width)), Tracker1.rectTransform.localPosition.y);
+            Tracker1.rectTransform.localPosition = new Vector2((webCamTexture.width / -2) + (trackerMiddlePoint.x * (webCamTexture.width / width)), Tracker1.rectTransform.localPosition.y);
         }
         else
         {
             Tracker1.enabled = false;
         }
-      
 
-       
+        trackerPosition.text = Tracker1.transform.position.x.ToString() + ", " + Tracker1.transform.position.y.ToString();
+
+
+        
+
     }
 
  
+    public void CleanTexture()
+    {
+        Destroy(newTex);
+        Destroy(image);
+    }
   
 
     public bool TrackerOnMarker(Vector2 vec)

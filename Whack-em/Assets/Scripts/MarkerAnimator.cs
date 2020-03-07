@@ -11,10 +11,6 @@ public class MarkerAnimator : MonoBehaviour
         GetComponent<Animator>().SetBool("Touched", true);
     }
 
-    public void DestoryMarker()
-    {
-        //
-    }
 
     private void Update()
     {
