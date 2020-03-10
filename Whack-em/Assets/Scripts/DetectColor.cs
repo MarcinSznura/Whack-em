@@ -12,6 +12,7 @@ public class DetectColor : MonoBehaviour
     public WebCamTexture webCamTexture;
     WebCamDevice[] devices;
     [SerializeField] int width, height;
+    [SerializeField] int screenWidth, screenHeight;
     bool CalibrationMode = false;
 
     [Header("RGB Colors")]
@@ -49,9 +50,10 @@ public class DetectColor : MonoBehaviour
     [Header("Trackers")]
     public Image Tracker1;
 
-    [SerializeField] TextMeshProUGUI trackerPosition;
     Texture2D image;
     Texture2D newTex;
+
+
 
     [System.Serializable]
     public class SingleGroup
@@ -74,6 +76,9 @@ public class DetectColor : MonoBehaviour
 
         width = webCamTexture.width;
         height = webCamTexture.height;
+
+        screenWidth = Screen.currentResolution.width;
+        screenHeight = Screen.currentResolution.height;
 
         GetComponent<RawImage>().texture = webCamTexture;
 
@@ -299,20 +304,19 @@ public class DetectColor : MonoBehaviour
 
             if (trackerMiddlePoint.y < height / 2)
             {
-                Tracker1.rectTransform.localPosition = new Vector2(trackerMiddlePoint.x, ((webCamTexture.height / -2) + trackerMiddlePoint.y * (webCamTexture.height / height)));
+                Tracker1.rectTransform.localPosition = new Vector2(trackerMiddlePoint.x, (((height / -2) + trackerMiddlePoint.y) * (screenHeight / height)));
             }
             else
             {
-                Tracker1.rectTransform.localPosition = new Vector2(trackerMiddlePoint.x, ((trackerMiddlePoint.y - height / 2) * (webCamTexture.height / height)));
+                Tracker1.rectTransform.localPosition = new Vector2(trackerMiddlePoint.x, ((trackerMiddlePoint.y - height / 2) * (screenHeight / height)));
             }
-            Tracker1.rectTransform.localPosition = new Vector2((webCamTexture.width / -2) + (trackerMiddlePoint.x * (webCamTexture.width / width)), Tracker1.rectTransform.localPosition.y);
+            
+            Tracker1.rectTransform.localPosition = new Vector2(-(( (width/-2) + trackerMiddlePoint.x) * (screenWidth / width)), Tracker1.rectTransform.localPosition.y);
         }
         else
         {
             Tracker1.enabled = false;
         }
-
-        trackerPosition.text = Tracker1.transform.position.x.ToString() + ", " + Tracker1.transform.position.y.ToString();
 
 
         

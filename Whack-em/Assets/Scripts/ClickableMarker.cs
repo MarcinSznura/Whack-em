@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(MarkerPlacer))]
 public class ClickableMarker : MonoBehaviour
 {
-
-    [SerializeField] MarkerPlacer MP;
-
     public void Click()
     {
-        MP.Whacked();
-        Debug.Log("clik");
+        GetComponent<MarkerPlacer>().Whacked();
     }
 
 }
