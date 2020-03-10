@@ -12,8 +12,11 @@ public class DetectColor : MonoBehaviour
     public WebCamTexture webCamTexture;
     WebCamDevice[] devices;
     [SerializeField] int width, height;
-    [SerializeField] int screenWidth, screenHeight;
-    bool CalibrationMode = false;
+
+    [Header("Resolution Info")]
+    [SerializeField] int screenWidth;
+    [SerializeField] int screenHeight;
+    
 
     [Header("RGB Colors")]
     [SerializeField] [Range(0, 1)] double HvalueMin = 0.1f;
@@ -47,14 +50,15 @@ public class DetectColor : MonoBehaviour
     public Slider sliderVvalueMax;
     public Slider sliderRange;
 
-    [Header("Trackers")]
-    public Image Tracker1;
+    [Header("Tracker")]
+    public Image Tracker;
 
+    bool CalibrationMode = false;
     Texture2D image;
     Texture2D newTex;
 
 
-
+    #region(Lists)
     [System.Serializable]
     public class SingleGroup
     {
@@ -66,6 +70,7 @@ public class DetectColor : MonoBehaviour
     {
         public List<SingleGroup> list;
     }
+    #endregion
 
     void Start()
     {
@@ -85,8 +90,6 @@ public class DetectColor : MonoBehaviour
         mapa = new int[mapaX, mapaY];
 
         SubmitSliderSetting();
-
-        
     }
 
     public void SubmitSliderSetting()
@@ -104,9 +107,6 @@ public class DetectColor : MonoBehaviour
         rangeValue.text = "Objects size: "+ObjectsDetectionRange.ToString();
     }
 
-    
-
-
     public void ReadColors()
     {
         ListOfAllGroups.list.Clear();
@@ -117,36 +117,32 @@ public class DetectColor : MonoBehaviour
         image.SetPixels(webCamTexture.GetPixels());
         image.Apply();
 
-            newTex = new Texture2D(image.width, image.height);
+        newTex = new Texture2D(image.width, image.height);
 
-            for (int x = 0; x < newTex.width; x++)
+        for (int x = 0; x < newTex.width; x++)
+        {
+            for (int y = 0; y < newTex.height; y++)
             {
-                for (int y = 0; y < newTex.height; y++)
+
+                var rgb = image.GetPixel(x, y);
+                float R, G, B;
+                R = rgb.r;
+                G = rgb.g;
+                B = rgb.b;
+
+                if (R >= HvalueMin && R <= HvalueMax && G >= SvalueMin && G <= SvalueMax && B >= VvalueMin && B <= VvalueMax)
                 {
-
-                    var rgb = image.GetPixel(x, y);
-                    float H, S, V;
-                //Color.RGBToHSV(rgb, out H, out S, out V);
-                H = rgb.r;
-                S = rgb.g;
-                V = rgb.b;
-
-
-                    if (H >= HvalueMin && H <= HvalueMax && S >= SvalueMin && S <= SvalueMax && V >= VvalueMin && V <= VvalueMax)
-                    {
-                        mapa[x, y] = 1;
-                        //Color rgb = Color.black;
-                        newTex.SetPixel(x, y, Color.green);
-                    
+                    mapa[x, y] = 1;
+                    newTex.SetPixel(x, y, Color.green);
                 }
-                    else
-                    {
-                        mapa[x, y] = 0;
+                else
+                {
+                    mapa[x, y] = 0;
                     newTex.SetPixel(x, y, Color.black);
                 }
 
-                }
             }
+        }
 
         if (CalibrationMode)
         {
@@ -159,124 +155,99 @@ public class DetectColor : MonoBehaviour
         }
 
 
-        #region(Grupowanie pixeli)
+        #region(Pixels grouping)
         for (int x = 0; x < newTex.width; x++)
+        {
+            for (int y = 0; y < newTex.height; y++)
             {
-                for (int y = 0; y < newTex.height; y++)
+                if (mapa[x, y] == 1)
                 {
+
+                    for (int z = 1; z < 10; z++)
+                    {
+                        try
+                        {
+                            if (mapa[x - z, y] > 1)
+                            {
+                                mapa[x, y] = mapa[x - z, y];
+                                int index = mapa[x, y] - 2;
+                                ListOfAllGroups.list[index].list.Add(new Vector2Int(x, y));
+                                break;
+                            }
+
+                            if (mapa[x + z, y] > 1)
+                            {
+                                mapa[x, y] = mapa[x + z, y];
+                                int index = mapa[x, y] - 2;
+                                ListOfAllGroups.list[index].list.Add(new Vector2Int(x, y));
+                                break;
+                            }
+                            if (mapa[x, y - z] > 1)
+                            {
+                                mapa[x, y] = mapa[x, y - z];
+                                int index = mapa[x, y] - 2;
+                                ListOfAllGroups.list[index].list.Add(new Vector2Int(x, y));
+                                break;
+                            }
+                            if (mapa[x, y + z] > 1)
+                            {
+                                mapa[x, y] = mapa[x, y + z];
+                                int index = mapa[x, y] - 2;
+                                ListOfAllGroups.list[index].list.Add(new Vector2Int(x, y));
+                                break;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.Log("Exception caught: " + e);
+                        }
+                    }
+
                     if (mapa[x, y] == 1)
                     {
-
-                        for (int z = 1; z < 10; z++)
-                        {
-                            try
-                            {
-                                if (mapa[x - z, y] > 1)
-                                {
-                                    mapa[x, y] = mapa[x - z, y];
-                                    int index = mapa[x, y] - 2;
-                                    ListOfAllGroups.list[index].list.Add(new Vector2Int(x, y));
-                                    break;
-                                }
-
-                                if (mapa[x + z, y] > 1)
-                                {
-                                    mapa[x, y] = mapa[x + z, y];
-                                    int index = mapa[x, y] - 2;
-                                    ListOfAllGroups.list[index].list.Add(new Vector2Int(x, y));
-                                    break;
-                                }
-                                if (mapa[x, y - z] > 1)
-                                {
-                                    mapa[x, y] = mapa[x, y - z];
-                                    int index = mapa[x, y] - 2;
-                                    ListOfAllGroups.list[index].list.Add(new Vector2Int(x, y));
-                                    break;
-                                }
-                                if (mapa[x, y + z] > 1)
-                                {
-                                    mapa[x, y] = mapa[x, y + z];
-                                    int index = mapa[x, y] - 2;
-                                    ListOfAllGroups.list[index].list.Add(new Vector2Int(x, y));
-                                    break;
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                // przy krawedziach catch bedzie dzialal
-                            }
-                        }
-
-                        if (mapa[x, y] == 1)
-                        {
-                            ListOfAllGroups.list.Add(new SingleGroup());
-                            int index = ListOfAllGroups.list.Count - 1;
-                            ListOfAllGroups.list[index].list = new List<Vector2Int>();
-                            ListOfAllGroups.list[index].list.Add(new Vector2Int(x, y));
-                            mapa[x, y] = nextgroup;
-                            nextgroup++;
-                            // Debug.Log("nowa grupa");
-                        }
-                    }
-                }
-            } //END OF FOR
-            #endregion
-
-
-            #region(Łączenie grup pixeli)
-            for (int ll = 0; ll < ListOfAllGroups.list.Count; ll++)
-            {
-                if (ListOfAllGroups.list[ll].list.Count > 0)
-                {
-                    for (int la = 0; la < ListOfAllGroups.list.Count; la++)
-                    {
-                        if (ll != la && ListOfAllGroups.list[la].list.Count > 0)
-                        {
-                            Vector2Int v1 = new Vector2Int(ListOfAllGroups.list[ll].list[0].x, ListOfAllGroups.list[ll].list[0].y);
-                            foreach (Vector2Int point in ListOfAllGroups.list[la].list)
-                            {
-                                Vector2Int v2 = point;
-                                if (Vector2Int.Distance(v1, v2) < ObjectsDetectionRange)
-                                {
-                                    ListOfAllGroups.list[ll].list.AddRange(ListOfAllGroups.list[la].list);
-                                    ListOfAllGroups.list[la].list.Clear();
-                                    break;
-                                }
-                            }
-
-                        }
+                        ListOfAllGroups.list.Add(new SingleGroup());
+                        int index = ListOfAllGroups.list.Count - 1;
+                        ListOfAllGroups.list[index].list = new List<Vector2Int>();
+                        ListOfAllGroups.list[index].list.Add(new Vector2Int(x, y));
+                        mapa[x, y] = nextgroup;
+                        nextgroup++;
                     }
                 }
             }
+        }
         #endregion
 
-
-        #region(Wyznaczenie środków grupy "disabled")
-        /*
+        #region(Pixels group merging)
         for (int ll = 0; ll < ListOfAllGroups.list.Count; ll++)
         {
-            int minX = 1300, minY = 880, maxX = 0, maxY = 0;
-            if (ListOfAllGroups.list[ll].list.Count > 10)
+            if (ListOfAllGroups.list[ll].list.Count > 0)
             {
-                foreach (Vector2Int v in ListOfAllGroups.list[ll].list)
+                for (int la = 0; la < ListOfAllGroups.list.Count; la++)
                 {
-                    if (v.x < minX) minX = v.x;
-                    if (v.y < minY) minY = v.y;
-                    if (v.x > maxX) maxX = v.x;
-                    if (v.y > maxY) maxY = v.y;
-                }
-                middlePoints.Add(new Vector2((minX + maxX) / 2, (minY + maxY) / 2));
-            }
+                    if (ll != la && ListOfAllGroups.list[la].list.Count > 0)
+                    {
+                        Vector2Int v1 = new Vector2Int(ListOfAllGroups.list[ll].list[0].x, ListOfAllGroups.list[ll].list[0].y);
+                        foreach (Vector2Int point in ListOfAllGroups.list[la].list)
+                        {
+                            Vector2Int v2 = point;
+                            if (Vector2Int.Distance(v1, v2) < ObjectsDetectionRange)
+                            {
+                                ListOfAllGroups.list[ll].list.AddRange(ListOfAllGroups.list[la].list);
+                                ListOfAllGroups.list[la].list.Clear();
+                                break;
+                            }
+                        }
 
+                    }
+                }
+            }
         }
-        */
         #endregion
 
-        #region(Wyznaczenie środka największej grupy)
+        #region(Middle point finding)
         int maxGroup = 1;
         for (int ll = 0; ll < ListOfAllGroups.list.Count; ll++)
         {
-            
             int minX = 1300, minY = 880, maxX = 0, maxY = 0;
             if (ListOfAllGroups.list[ll].list.Count > maxGroup)
             {
@@ -291,39 +262,38 @@ public class DetectColor : MonoBehaviour
                 middlePoints.Add(new Vector2((minX + maxX) / 2, (minY + maxY) / 2));
                 maxGroup = ListOfAllGroups.list[ll].list.Count;
             }
+        }
+        #endregion
 
+        #region(Camera and screen resolution scaling)
+        if (middlePoints.Count > 0)
+        {
+            Tracker.enabled = true;
+            float x, y;
+
+            if (trackerMiddlePoint.y < height / 2)
+            {
+                y = (((height / -2) + trackerMiddlePoint.y) * (screenHeight / height));
+            }
+            else
+            {
+                y= (trackerMiddlePoint.y - height / 2) * (screenHeight / height);
+            }
+
+            x = -((width / -2) + trackerMiddlePoint.x) * (screenWidth / width);
+
+            Tracker.rectTransform.localPosition = new Vector2(x,y);
+        }
+        else
+        {
+            Tracker.enabled = false;
         }
         #endregion
 
 
-
-
-        if (middlePoints.Count > 0)
-        {
-            Tracker1.enabled = true;
-
-            if (trackerMiddlePoint.y < height / 2)
-            {
-                Tracker1.rectTransform.localPosition = new Vector2(trackerMiddlePoint.x, (((height / -2) + trackerMiddlePoint.y) * (screenHeight / height)));
-            }
-            else
-            {
-                Tracker1.rectTransform.localPosition = new Vector2(trackerMiddlePoint.x, ((trackerMiddlePoint.y - height / 2) * (screenHeight / height)));
-            }
-            
-            Tracker1.rectTransform.localPosition = new Vector2(-(( (width/-2) + trackerMiddlePoint.x) * (screenWidth / width)), Tracker1.rectTransform.localPosition.y);
-        }
-        else
-        {
-            Tracker1.enabled = false;
-        }
-
-
-        
-
     }
 
- 
+
     public void CleanTexture()
     {
         Destroy(newTex);
@@ -335,7 +305,7 @@ public class DetectColor : MonoBehaviour
     {
         if (middlePoints.Count > 0)
         {
-            Vector2 pom = new Vector2(Tracker1.rectTransform.localPosition.x, Tracker1.rectTransform.localPosition.y);
+            Vector2 pom = new Vector2(Tracker.rectTransform.localPosition.x, Tracker.rectTransform.localPosition.y);
             if (Vector2.Distance(pom, vec) < 200)
             {
                 return true;

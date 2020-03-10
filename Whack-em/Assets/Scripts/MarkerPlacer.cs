@@ -5,70 +5,66 @@ using UnityEngine.UI;
 
 public class MarkerPlacer : MonoBehaviour
 {
-    [SerializeField] bool doubleMarker = false;
     [SerializeField] Vector2 [] MarkersPositions;
-    [SerializeField] Image Marker1;
+    [SerializeField] Image Marker;
 
     [SerializeField] GameObject animated;
     [SerializeField] Canvas GUICanvas;
-    [SerializeField] AudioSource soundPlayer;
     [SerializeField] AudioClip sound;
 
-    [SerializeField] Vector2 pos1;
+    [SerializeField] Vector2 pos;
     private int newPlace, oldPlace;
+    DetectColor colorDetector;
+    GameMaster gameMaster;
 
-
-    private void Start()
+    private void Awake()
     {
-        soundPlayer = GetComponent<AudioSource>();
+        colorDetector = FindObjectOfType<DetectColor>();
+        gameMaster = FindObjectOfType<GameMaster>();
     }
 
     private void Update()
     {
-        Vector2 m = new Vector2(Marker1.rectTransform.localPosition.x, Marker1.rectTransform.localPosition.y);
-        if (FindObjectOfType<DetectColor>().TrackerOnMarker(m))
+        Vector2 m = new Vector2(Marker.rectTransform.localPosition.x, Marker.rectTransform.localPosition.y);
+        if (colorDetector.TrackerOnMarker(m))
         {
             Whacked();
         }
-
     }
 
     public void Whacked()
     {
         oldPlace = newPlace;
-        FindObjectOfType<GameMaster>().IncreaseScore(1);
-        soundPlayer.PlayOneShot(sound);
-        Instantiate(animated, new Vector3(Marker1.transform.position.x, Marker1.transform.position.y, Marker1.transform.position.z), Quaternion.identity, GUICanvas.transform);
-        PutMarkersInRandomTiles();
+        gameMaster.IncreaseScore(1);
+        GetComponent<AudioSource>().PlayOneShot(sound);
+        Instantiate(animated, new Vector3(Marker.transform.position.x, Marker.transform.position.y, Marker.transform.position.z), Quaternion.identity, GUICanvas.transform);
+        PutMarkerInRandomTiles();
     }
 
-    public  void PutMarkersInRandomTiles()
+    public  void PutMarkerInRandomTiles()
     {
         while(oldPlace == newPlace)
         {
             newPlace = Random.Range(0, 8);
         }
         
-            pos1 = MarkersPositions[newPlace];
-            Marker1.rectTransform.localPosition = new Vector2(pos1.x, pos1.y);
-           
-
+            pos = MarkersPositions[newPlace];
+            Marker.rectTransform.localPosition = new Vector2(pos.x, pos.y);
     }
 
     public void HideMarker()
     {
-        Marker1.enabled = false;
+        Marker.enabled = false;
     }
 
     public void ShowMarker()
     {
-        Marker1.enabled = true;
+        Marker.enabled = true;
     }
 
     public void PutMarkerOutsideScreen()
     {
-        Marker1.rectTransform.localPosition = new Vector2(2000, 0);
-
+        Marker.rectTransform.localPosition = new Vector2(2000, 0);
     }
 
 }

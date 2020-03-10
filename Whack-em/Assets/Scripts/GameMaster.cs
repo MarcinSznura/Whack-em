@@ -7,29 +7,37 @@ using UnityEngine.UI;
 
 public class GameMaster : MonoBehaviour
 {
+    [Header("Game stats")]
     [SerializeField] State state;
     [SerializeField] int score = 0;
+    [SerializeField] float captureRate = 1;
+    [SerializeField] bool calibrationMode = false;
+
+    [Header("Text")]
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] TextMeshProUGUI timeText;
+    [SerializeField] TextMeshProUGUI fpsText;
+
+    [Header("Buttons")]
     [SerializeField] GameObject startGameButton;
     [SerializeField] GameObject stopGameButton;
     [SerializeField] GameObject calibrationModeButton;
     [SerializeField] GameObject switchWebcameraButton;
     [SerializeField] GameObject soundButton;
- 
-    [SerializeField] float captureRate = 1;
-    [SerializeField] bool calibrationMode = false;
+
+    [Header("Sliders")]
     [SerializeField] GameObject sliders;
     [SerializeField] Slider fpsValue;
-    [SerializeField] TextMeshProUGUI fpsText;
+
+    [Header("Images")]
+    [SerializeField] Sprite soundOnImage;
+    [SerializeField] Sprite soundOffImage;
 
     bool captureWebCamera = true;
-    DetectColor colorReader;
     float roundTime = 0;
     bool soundOn = true;
 
-    [SerializeField] Sprite soundOnImage;
-    [SerializeField] Sprite soundOffImage;
+    DetectColor colorReader;
 
     enum State {idlle, calibration, game };
 
@@ -38,15 +46,14 @@ public class GameMaster : MonoBehaviour
         colorReader = FindObjectOfType<DetectColor>();
         scoreText.text = "Score: " + score.ToString();
         timeText.text = "Time: " + Math.Round(roundTime, 2).ToString();
-        state = State.idlle;
         fpsText.text = "FPS: " + fpsValue.value.ToString();
+        state = State.idlle;
     }
 
     void Update()
     {
         try
         {
-            // if (state == State.game)
             if (captureWebCamera)
                 StartCoroutine(ReadColors());
 
@@ -74,7 +81,7 @@ public class GameMaster : MonoBehaviour
         }
         catch(Exception e)
         {
-
+            Debug.Log("Exception caught: " + e);
         }
     }
 
@@ -100,10 +107,11 @@ public class GameMaster : MonoBehaviour
         yield return new WaitForSeconds(captureRate);
         captureWebCamera = true;
     }
-    
+
+    #region (Buttons)
     public void StartRound30()
     {
-        FindObjectOfType<MarkerPlacer>().PutMarkersInRandomTiles();
+        FindObjectOfType<MarkerPlacer>().PutMarkerInRandomTiles();
         roundTime = 30;
         score = 0;
         calibrationModeButton.SetActive(false);
@@ -114,7 +122,7 @@ public class GameMaster : MonoBehaviour
 
     public void StartRound1()
     {
-        FindObjectOfType<MarkerPlacer>().PutMarkersInRandomTiles();
+        FindObjectOfType<MarkerPlacer>().PutMarkerInRandomTiles();
         roundTime = 60;
         score = 0;
         calibrationModeButton.SetActive(false);
@@ -125,7 +133,7 @@ public class GameMaster : MonoBehaviour
 
     public void StartRound2()
     {
-        FindObjectOfType<MarkerPlacer>().PutMarkersInRandomTiles();
+        FindObjectOfType<MarkerPlacer>().PutMarkerInRandomTiles();
         roundTime = 120;
         score = 0;
         calibrationModeButton.SetActive(false);
@@ -136,18 +144,13 @@ public class GameMaster : MonoBehaviour
 
     public void StartRound5()
     {
-        FindObjectOfType<MarkerPlacer>().PutMarkersInRandomTiles();
+        FindObjectOfType<MarkerPlacer>().PutMarkerInRandomTiles();
         roundTime = 360;
         score = 0;
         calibrationModeButton.SetActive(false);
         state = State.game;
         scoreText.text = "Score: " + score.ToString();
         HideShowRightButtons();
-    }
-
-    public void CloseGame()
-    {
-        Application.Quit();
     }
 
     public void TurnSoundOnOff()
@@ -176,6 +179,12 @@ public class GameMaster : MonoBehaviour
         HideShowRightButtons();
     }
 
+    public void CloseGame()
+    {
+        Application.Quit();
+    }
+    #endregion
+
     private void HideShowRightButtons()
     {
         if (state == State.game)
@@ -195,7 +204,7 @@ public class GameMaster : MonoBehaviour
     {
         if (calibrationMode)
         {
-            FindObjectOfType<DetectColor>().IsCalibrationModeOn(false);
+            colorReader.IsCalibrationModeOn(false);
             scoreText.text = "Score: " + score.ToString();
             timeText.text = "Time: " + Math.Round(roundTime, 2).ToString();
 
@@ -208,7 +217,7 @@ public class GameMaster : MonoBehaviour
         }
         else
         {
-            FindObjectOfType<DetectColor>().IsCalibrationModeOn(true);
+            colorReader.IsCalibrationModeOn(true);
             scoreText.text = "";
             timeText.text = "";
             calibrationMode = true;

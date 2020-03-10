@@ -3811,7 +3811,7 @@ MonoBehaviour:
   sliderVvalueMin: {fileID: 510470523}
   sliderVvalueMax: {fileID: 1489713440}
   sliderRange: {fileID: 1438190471}
-  Tracker1: {fileID: 1853290529}
+  Tracker: {fileID: 1853290529}
 --- !u!114 &668922101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5062,7 +5062,6 @@ GameObject:
   - component: {fileID: 1147637691}
   - component: {fileID: 1147637690}
   - component: {fileID: 1147637696}
-  - component: {fileID: 1147637693}
   - component: {fileID: 1147637692}
   - component: {fileID: 1147637694}
   - component: {fileID: 1147637695}
@@ -5148,18 +5147,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1147637693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1147637688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03103eaeb159ba943b7ed2e7b9cd5983, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!65 &1147637694
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5239,7 +5226,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d92b2caff48e854aa3af9c72294da9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doubleMarker: 0
   MarkersPositions:
   - {x: 0, y: 0}
   - {x: -630, y: 0}
@@ -5249,13 +5235,12 @@ MonoBehaviour:
   - {x: -630, y: 360}
   - {x: 0, y: -360}
   - {x: 630, y: -360}
-  Marker1: {fileID: 1147637690}
+  Marker: {fileID: 1147637690}
   animated: {fileID: 4263211939948287843, guid: b5a4c746ad2ed7541b7a0793e12624b8,
     type: 3}
   GUICanvas: {fileID: 208950192}
-  soundPlayer: {fileID: 0}
   sound: {fileID: 8300000, guid: 1056e7e7cf2b9464d94101a6f15c8d3d, type: 3}
-  pos1: {x: 0, y: 0}
+  pos: {x: 0, y: 0}
 --- !u!82 &1147637697
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8157,18 +8142,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   state: 0
   score: 0
+  captureRate: 0.01
+  calibrationMode: 0
   scoreText: {fileID: 171042731}
   timeText: {fileID: 1172723793}
+  fpsText: {fileID: 190237603}
   startGameButton: {fileID: 1157983164}
   stopGameButton: {fileID: 431131635}
   calibrationModeButton: {fileID: 1017634890}
   switchWebcameraButton: {fileID: 1232110832}
   soundButton: {fileID: 341634259}
-  captureRate: 0.01
-  calibrationMode: 0
   sliders: {fileID: 776560936}
   fpsValue: {fileID: 2075438585}
-  fpsText: {fileID: 190237603}
   soundOnImage: {fileID: 21300000, guid: 1af01c63c221c274a888b1270e6b9afc, type: 3}
   soundOffImage: {fileID: 21300000, guid: ffc948f00ca515840b2fd71fab8bc693, type: 3}
 --- !u!1 &2025944759

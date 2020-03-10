@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(Animator))]
 public class MarkerAnimator : MonoBehaviour
 {
     private void Start()
     {
         GetComponent<Animator>().SetBool("Touched", true);
     }
-
 
     private void Update()
     {
@@ -19,4 +19,5 @@ public class MarkerAnimator : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
 }
