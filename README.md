@@ -1,4 +1,4 @@
-
+<img src="Whack-em/Assets/Sprites/simple/marker.png" width="200">
 
 # Whack-em
 
@@ -8,7 +8,7 @@ Whack-em is a motion capture version of popular game whac-a-mole.
 
 To run this game you will need:
 - webcam
-- monochromatic object as controller
+- monochromatic object as a controller
 - background of color different than controller
 
 ### Installing
