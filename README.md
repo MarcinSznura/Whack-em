@@ -2,7 +2,7 @@
 
 # Whack-em
 
-Whack-em is a motion capture version of popular game whac-a-mole. You can define any monochromatic object as a controller.Then move this object in front of your webcamera to move a cursor in game.
+Whack-em is a motion capture version of popular game whac-a-mole. You can define any monochromatic object as a controller. Then move this object in front of your webcamera to move a cursor in game.
 
 ## Getting Started
 
@@ -24,19 +24,15 @@ To open this as a Unity project:
 
 ### Calibration
 
-1. Pick a monochromatic object(red,green,blue are the best options) and put it in front of a camera.
+1. Pick a monochromatic object (red, green, blue are the best picks) and put it in front of a camera.
 2. Go to calibration mode during a game.
 3. Set color detection ranges to match you controller color eg.:
   red controller - set red value above 50%, green and blue below 50%
   green controller - set green value above 50%, red and blue below 50%
   blue controller - set blue value above 50%, red and green below 50%
-4. Make ranges so small so only your controller was detected but so big so your controller was awlays detected.
+4. Make ranges so small so only your controller was detected but big enough to it was always detected.
 5. Exit calibration mode.
 
 ## Built With
 
 Unity 2019.2.19f1
-
-## License
-
-...
