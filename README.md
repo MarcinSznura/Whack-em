@@ -30,7 +30,7 @@ To open this as a Unity project:
 red controller - set red value above 50%, green and blue below 50%  
   green controller - set green value above 50%, red and blue below 50%  
   blue controller - set blue value above 50%, red and green below 50%  
-4. Make ranges so small so only your controller was detected but big enough to it was always detected.
+4. Make ranges so small so only your controller was detected but big enough so it was always detected.
 5. Exit calibration mode.
 
 ### Built With
