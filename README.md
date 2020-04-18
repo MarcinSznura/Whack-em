@@ -40,3 +40,7 @@ Unity 2019.2.19f1
 ## Game Presentation
 
 https://www.youtube.com/watch?v=JX-UR-WcG6o&feature=youtu.be
+
+## Windows Working Version
+
+https://drive.google.com/drive/folders/18XrMv6zrkmbxcZGGalRncskrnz2mC4oo
